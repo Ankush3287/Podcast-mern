@@ -9,16 +9,23 @@ import {
 /**Pages Import */
 import Home from "./pages/Home/Home";
 import RootLayout from "./layouts/RootLayout";
-import Register from "./pages/Register/Register";
-import Login from "./pages/Login/Login";
+import Authenticate from "./pages/Authenticate/Authenticate";
+import Activate from "./pages/Activate/Activate";
+import Rooms from "./pages/Rooms/Rooms";
+
+/**Protected Routes */
+import GuestRoute from "./ProtectedRoutes/GuestRoute";
+import SemiProtected from "./ProtectedRoutes/SemiProtected";
+import Protected from "./ProtectedRoutes/Protected";
 
 /**Root Routes */
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
-      <Route index element={<Home />} />
-      <Route path="register" element={<Register />} />
-      <Route path="login" element={<Login />} />
+      <Route index element={<GuestRoute Comp={Home} />} />
+      <Route path="authenticate" element={<GuestRoute Comp={Authenticate} />} />
+      <Route path="activate" element={<SemiProtected Comp={Activate} />} />
+      <Route path="rooms" element={<Protected Comp={Rooms} />} />
     </Route>
   )
 );

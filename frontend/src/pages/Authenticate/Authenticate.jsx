@@ -9,7 +9,7 @@ const steps = {
   2: StepOTP,
 };
 
-const Login = () => {
+const Authenticate = () => {
   const [step, setStep] = useState(1);
   const Step = steps[step];
 
@@ -24,4 +24,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Authenticate;
