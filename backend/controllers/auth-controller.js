@@ -90,6 +90,79 @@ class AuthController {
 
     res.json({ user: userDto, auth: true });
   }
+
+  /**Refreshing access token */
+
+  async refresh(req, res) {
+    //We will get refresh token from cookie
+    const { refreshToken: refreshTokenFromCookie } = req.cookies;
+
+    //Then check whether token is valid or not
+    let userData;
+    try {
+      userData = await tokenService.verifyRefreshToken(refreshTokenFromCookie);
+    } catch (err) {
+      return res.status(401).json({ message: "Invalid Token" });
+    }
+
+    //Check whether this token exist in db or not
+    try {
+      const token = await tokenService.findRefreshToken(
+        userData._id,
+        refreshTokenFromCookie
+      );
+      if (!token) {
+        return res.status(401).json({ message: "Invalid Token" });
+      }
+    } catch (err) {
+      return res.status(500).json({ message: "Token not found" });
+    }
+
+    //Check if valid user
+    const user = await userService.findUser({ _id: userData._id });
+    if (!user) {
+      return res.status(404).json({ message: "No user found" });
+    }
+
+    //Generate new tokens
+    const { accessToken, refreshToken } = tokenService.generateTokens({
+      _id: userData._id,
+    });
+
+    //Update Refresh token
+    try {
+      await tokenService.updateRefreshToken(userData._id, refreshToken);
+    } catch (err) {
+      return res.status(500).json({ message: "Internal Error" });
+    }
+
+    //Putting tokens in cookie
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      httpOnly: true,
+    });
+
+    res.cookie("accessToken", accessToken, {
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      httpOnly: true,
+    });
+
+    const userDto = new UserDto(user); //Modifying user properties;
+
+    res.json({ user: userDto, auth: true });
+  }
+
+  /**Logout user */
+  async logout(req, res) {
+    const { refreshToken } = req.cookies;
+    //Deleting refresh token from db
+    await tokenService.removeToken(refreshToken);
+
+    //Deleting cookies
+    res.clearCookie("refreshToken");
+    res.clearCookie("accessToken");
+    res.json({ user: null, auth: false });
+  }
 }
 
 module.exports = new AuthController();

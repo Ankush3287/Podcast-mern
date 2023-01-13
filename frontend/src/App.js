@@ -5,6 +5,8 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import { useLoadingWithRefresh } from "./hooks/useLoadingWithRefresh";
+import Loader from "./components/shared/Loader/Loader";
 
 /**Pages Import */
 import Home from "./pages/Home/Home";
@@ -31,7 +33,12 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+  const { loading } = useLoadingWithRefresh();
+  return loading ? (
+    <Loader message="Loading, Please wait!" />
+  ) : (
+    <RouterProvider router={router} />
+  );
 }
 
 export default App;

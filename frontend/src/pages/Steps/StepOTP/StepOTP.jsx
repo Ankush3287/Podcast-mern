@@ -14,6 +14,7 @@ const StepOTP = () => {
   const dispatch = useDispatch();
 
   async function submit() {
+    if (!otp || !phone || !hash) return;
     /**Server Request */
     try {
       const { data } = await verifyOtp({ otp, phone, hash });
