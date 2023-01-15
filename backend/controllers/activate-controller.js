@@ -11,7 +11,7 @@ class ActivateController {
       res.status(400).json({ message: "All fields are required" });
     }
 
-    /**Making img from ae 64 img */
+    /**Making img from base 64 img */
     const buffer = Buffer.from(
       avatar.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
       "base64"
