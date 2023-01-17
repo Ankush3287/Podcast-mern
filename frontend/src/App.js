@@ -14,6 +14,7 @@ import RootLayout from "./layouts/RootLayout";
 import Authenticate from "./pages/Authenticate/Authenticate";
 import Activate from "./pages/Activate/Activate";
 import Rooms from "./pages/Rooms/Rooms";
+import Room from "./pages/Room/Room";
 
 /**Protected Routes */
 import GuestRoute from "./ProtectedRoutes/GuestRoute";
@@ -28,6 +29,7 @@ const router = createBrowserRouter(
       <Route path="authenticate" element={<GuestRoute Comp={Authenticate} />} />
       <Route path="activate" element={<SemiProtected Comp={Activate} />} />
       <Route path="rooms" element={<Protected Comp={Rooms} />} />
+      <Route path="room/:id" element={<Protected Comp={Room} />} />
     </Route>
   )
 );

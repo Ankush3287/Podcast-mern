@@ -7,14 +7,12 @@ import { setAvatar } from "../../../store/activateSlice";
 import { activate } from "../../../http";
 import { setAuth } from "../../../store/authSlice";
 import Loader from "../../../components/shared/Loader/Loader";
-import { useEffect } from "react";
 
 const StepAvatar = ({ onNext }) => {
   const { name, avatar } = useSelector((state) => state.activate);
   const [image, setImage] = useState("/images/monkey-avatar.png");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const [unMounted, setUnMounted] = useState(false);
 
   const changeImg = (e) => {
     const file = e.target.files[0];
@@ -32,7 +30,7 @@ const StepAvatar = ({ onNext }) => {
     try {
       const { data } = await activate({ name, avatar });
       if (data.auth) {
-        if (!unMounted) dispatch(setAuth(data));
+        dispatch(setAuth(data));
       }
     } catch (err) {
       console.log(err);
@@ -40,12 +38,6 @@ const StepAvatar = ({ onNext }) => {
       setLoading(false);
     }
   }
-
-  useEffect(() => {
-    return () => {
-      setUnMounted(true);
-    };
-  }, []);
 
   if (loading) {
     return <Loader message="Activation in progress..." />;

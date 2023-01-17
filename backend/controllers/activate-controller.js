@@ -27,8 +27,8 @@ class ActivateController {
     }
 
     /**Updating user */
+    const userId = req.user._id; //We have attached userdata to req object in middleware
     try {
-      const userId = req.user._id; //We have attached userdata to req object in middleware
       const user = await userService.findUser({ _id: userId });
       if (!user) {
         res.status(404).json({ message: "User Not found" });
